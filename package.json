@@ -1,0 +1,29 @@
+{
+  "name": "social-network-backend",
+  "version": "1.0.0",
+  "description": "This is the backend for a social networking app",
+  "main": "bin/www",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MubashirAR/social-network-backend.git"
+  },
+  "author": "Mubashir Reshamwala",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MubashirAR/social-network-backend/issues"
+  },
+  "homepage": "https://github.com/MubashirAR/social-network-backend#readme",
+  "dependencies": {
+    "@types/sequelize": "^4.28.8",
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^15.0.0",
+    "moment": "^2.24.0",
+    "pg": "^8.0.2",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.21.6"
+  }
+}

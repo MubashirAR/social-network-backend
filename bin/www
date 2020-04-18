@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+const express = require('express');
+const moment = require('moment');
+const User = require('../models/User');
+const Post = require('../models/Post');
+const database = require('../config/database');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.get('/', (req, res) => res.send('Hello world'));
+app.get('/user', async (req, res) => {
+  let users = await User.findAll();
+  res.send(users);
+});
+app.get('/createuser', async (req, res) => {
+  try {
+    let users = await User.create({
+      name: 'Test',
+      username: 'test',
+      email: 'test@test.com',
+      mobile: '122',
+      dob: moment().subtract(10, 'years'),
+    });
+    res.send(users);
+  } catch (error) {
+    if(error.errors && error.errors.length) {
+      error = {
+        msg: error.errors.map(e => e.message).join(' ')
+      }
+    }
+    res.send(error);
+  }
+});
+app.get('/createpost', async (req, res) => {
+  try {
+    let users = await Post.create({
+      text: 'Test',
+      _createdBy: 1,
+      postType: 'post',
+    });
+    res.send(users);
+  } catch (error) {
+    if(error.errors && error.errors.length) {
+      error = {
+        msg: error.errors.map(e => e.message).join(' ')
+      }
+    }
+    res.send(error);
+  }
+});
+// if(process.env.NODE_ENV !== 'production') {
+// database.database.sync({force: true}).then(() => {
+//   console.log('sync')
+// });
+// }
+app.listen(5000, () => {
+  console.log(`Server running on port ${PORT}`);
+});

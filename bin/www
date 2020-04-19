@@ -4,6 +4,11 @@ const express = require('express');
 const moment = require('moment');
 const User = require('../models/User');
 const Post = require('../models/Post');
+const Comment = require('../models/Comment');
+const { Friend, RequestedBy, RequestedTo } = require('../models/Friend');
+const { Block, BlockedBy, BlockedUser } = require('../models/Block');
+const { Picture } = require('../models/Picture');
+const { Like } = require('../models/Like');
 const database = require('../config/database');
 
 const app = express();
@@ -23,12 +28,19 @@ app.get('/createuser', async (req, res) => {
       mobile: '122',
       dob: moment().subtract(10, 'years'),
     });
+    users = await User.create({
+      name: 'Test',
+      username: 'test1',
+      email: 'test@test1.com',
+      mobile: '1221',
+      dob: moment().subtract(10, 'years'),
+    });
     res.send(users);
   } catch (error) {
-    if(error.errors && error.errors.length) {
+    if (error.errors && error.errors.length) {
       error = {
-        msg: error.errors.map(e => e.message).join(' ')
-      }
+        msg: error.errors.map(e => e.message).join(' '),
+      };
     }
     res.send(error);
   }
@@ -42,19 +54,142 @@ app.get('/createpost', async (req, res) => {
     });
     res.send(users);
   } catch (error) {
-    if(error.errors && error.errors.length) {
+    if (error.errors && error.errors.length) {
       error = {
-        msg: error.errors.map(e => e.message).join(' ')
-      }
+        msg: error.errors.map(e => e.message).join(' '),
+      };
     }
     res.send(error);
   }
 });
-// if(process.env.NODE_ENV !== 'production') {
-// database.database.sync({force: true}).then(() => {
-//   console.log('sync')
-// });
-// }
+app.get('/createcomment', async (req, res) => {
+  try {
+    let users = await Comment.create({
+      text: 'THis is a great post!',
+      _commentBy: 1,
+      commentedOn: 'post',
+      _originalPostId: 1,
+    });
+    users = await Comment.create({
+      text: 'THis is a great post!',
+      _commentBy: 1,
+      commentedOn: 'comment',
+      _originalCommentId: 1,
+    });
+    const comments = await Comment.findAll();
+    res.send(comments);
+  } catch (error) {
+    console.log(error);
+    if (error.errors && error.errors.length) {
+      error = {
+        msg: error.errors.map(e => e.message).join(' '),
+      };
+    }
+    res.send(error);
+  }
+});
+app.get('/createfriend', async (req, res) => {
+  try {
+    console.log([RequestedBy].includes);
+    let friend = await Friend.create(
+      {
+        RequestedById: 1,
+        RequestedToId: 2,
+      },
+      {
+        association: [RequestedBy, RequestedTo],
+      }
+    );
+    res.send(friend);
+  } catch (error) {
+    console.log(error);
+    if (error.message) {
+      error = {
+        msg: error.message,
+      };
+    }
+    if (error.errors && error.errors.length) {
+      error = {
+        msg: error.errors.map(e => e.message).join(' '),
+      };
+    }
+    res.send(error);
+  }
+});
+app.get('/block', async (req, res) => {
+  try {
+    console.log([RequestedBy].includes);
+    let block = await Block.create(
+      {
+        BlockedById: 1,
+        BlockedUserId: 2,
+      },
+      {
+        association: [BlockedBy, BlockedUser],
+      }
+    );
+    res.send(block);
+  } catch (error) {
+    console.log(error);
+    if (error.message) {
+      error = {
+        msg: error.message,
+      };
+    }
+    if (error.errors && error.errors.length) {
+      error = {
+        msg: error.errors.map(e => e.message).join(' '),
+      };
+    }
+    res.send(error);
+  }
+});
+app.get('/picture', async (req, res) => {
+  try {
+    let block = await Picture.create({
+      url: 'www.google.com',
+      type: 'post',
+      postId: 1,
+    });
+    res.send(block);
+  } catch (error) {
+    console.log(error);
+    if (error.message) {
+      error = {
+        msg: error.message,
+      };
+    }
+    if (error.errors && error.errors.length) {
+      error = {
+        msg: error.errors.map(e => e.message).join(' '),
+      };
+    }
+    res.send(error);
+  }
+});
+app.get('/like', async (req, res) => {
+  try {
+    let like = await Like.create({
+      likedType: 'post',
+      postId: 1,
+      likedById: 1,
+    });
+    res.send(like);
+  } catch (error) {
+    console.log(error);
+    if (error.message) {
+      error = {
+        msg: error.message,
+      };
+    }
+    if (error.errors && error.errors.length) {
+      error = {
+        msg: error.errors.map(e => e.message).join(' '),
+      };
+    }
+    res.send(error);
+  }
+});
 app.listen(5000, () => {
   console.log(`Server running on port ${PORT}`);
 });

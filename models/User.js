@@ -12,12 +12,12 @@ const User = database.define(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: {msg: 'Username is taken! Please another username.'},
+      unique: { msg: 'Username is taken! Please another username.' },
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: {msg: 'This email is already registered! Please login to continue'},
+      unique: { msg: 'This email is already registered! Please login to continue' },
       validate: {
         isEmail: { msg: 'Please enter a valid email ID' },
       },
@@ -54,4 +54,4 @@ const User = database.define(
 // User.sync({ force: true }).then(() => {
 //   console.log('synced');
 // });
-module.exports = User;
+module.exports = { User };

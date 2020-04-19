@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const database = require('../config/database').database;
-const CONSTANTS = require('../constants')
+const CONSTANTS = require('../constants');
 
 const Post = database.define(
   'post',
@@ -9,11 +9,11 @@ const Post = database.define(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        min: {args: 3, msg: 'The post is too short. Please ensure you have completed your post before submitting.'},
-        max: {args: 500, msg: 'The post is too long. Maximum size of the post can be 500 characters'},
+        min: { args: 3, msg: 'The post is too short. Please ensure you have completed your post before submitting.' },
+        max: { args: 500, msg: 'The post is too long. Maximum size of the post can be 500 characters' },
       },
     },
-    _createdBy: {
+    CreatedById: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -26,13 +26,13 @@ const Post = database.define(
       allowNull: false,
       values: CONSTANTS.POST_TYPES,
     },
-    _originalPostId: {
+    OriginalPostId: {
       // In case the post is actually a shared post
       type: DataTypes.INTEGER,
       references: {
         model: 'posts',
-        key: 'id'
-      }
+        key: 'id',
+      },
     },
   },
   {
@@ -42,4 +42,4 @@ const Post = database.define(
 // Post.sync({force: true}).then(() => {
 //   console.log('sync')
 // })
-module.exports = Post
+module.exports = { Post };

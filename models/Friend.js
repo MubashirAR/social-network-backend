@@ -2,10 +2,10 @@ const database = require('../config/database').database;
 const User = require('./User');
 const { DataTypes } = require('sequelize');
 
-let Friend = database.define(
+const Friend = database.define(
   'friend',
   {
-    // _requestedBy: {
+    // RequestedById: {
     //   type: DataTypes.INTEGER,
     //   allowNull: false,
     //   references: {
@@ -13,7 +13,7 @@ let Friend = database.define(
     //     key: 'id',
     //   },
     // },
-    // _requestedTo: {
+    // RequestedToId: {
     //   type: DataTypes.INTEGER,
     //   allowNull: false,
     //   references: {
@@ -23,10 +23,12 @@ let Friend = database.define(
     // },
     isAccepted: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
       defaultValue: false,
     },
     isRejected: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
       defaultValue: false,
     },
   },
@@ -34,8 +36,8 @@ let Friend = database.define(
     timestamps: true,
   }
 );
-const RequestedBy = Friend.belongsTo(User, { as: 'RequestedBy' });
-const RequestedTo = Friend.belongsTo(User, { as: 'RequestedTo' });
+const RequestedBy = Friend.belongsTo(User.User, { as: 'RequestedBy' });
+const RequestedTo = Friend.belongsTo(User.User, { as: 'RequestedTo' });
 Friend.afterValidate(({ dataValues }) => {
   if (!dataValues.RequestedById || !dataValues.RequestedToId) {
     throw new Error(`RequestedById & RequestedToId are required!`);

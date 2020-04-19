@@ -51,4 +51,4 @@ Comment.beforeValidate(({ dataValues }) => {
     throw new Error(`Original _originalPostId missing`);
   }
 });
-module.exports = Comment;
+module.exports = { Comment };

@@ -15,8 +15,8 @@ const Block = database.define(
   }
 );
 
-const BlockedBy = Block.belongsTo(User, { as: 'BlockedBy' });
-const BlockedUser = Block.belongsTo(User, { as: 'BlockedUser' });
+const BlockedBy = Block.belongsTo(User.User, { as: 'BlockedBy' });
+const BlockedUser = Block.belongsTo(User.User, { as: 'BlockedUser' });
 Block.afterValidate(({ dataValues }) => {
   if (!dataValues.BlockedById || !dataValues.BlockedUserId) {
     throw new Error(`BlockedById & BlockedUserId are required.`);

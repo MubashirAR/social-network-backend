@@ -34,6 +34,7 @@ const Like = database.define(
   },
   {
     timestamps: true,
+    underscored: true
   }
 );
 Like.beforeValidate(({dataValues}) => {

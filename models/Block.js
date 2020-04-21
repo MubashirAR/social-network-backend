@@ -12,6 +12,7 @@ const Block = database.define(
   },
   {
     timestamps: true,
+    underscored: true
   }
 );
 

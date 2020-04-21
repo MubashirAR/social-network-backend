@@ -2,20 +2,26 @@
 
 const express = require('express');
 const moment = require('moment');
-const {User} = require('../models/User');
-const {Post} = require('../models/Post');
-const {Comment} = require('../models/Comment');
+const { User } = require('../models/User');
+const { Post } = require('../models/Post');
+const { Comment } = require('../models/Comment');
 const { Friend, RequestedBy, RequestedTo } = require('../models/Friend');
 const { Block, BlockedBy, BlockedUser } = require('../models/Block');
 const { Picture } = require('../models/Picture');
 const { Like } = require('../models/Like');
-const database = require('../config/database');
-const controllers  = require('../controllers')
+const database = require('../config/database').database;
+const controllers = require('../controllers');
 const PORT = process.env.PORT || 5000;
 const app = express();
 
 // app.use(cors())
-app.get('/', (req, res) => res.send('Hello world'));
+app.get(
+  '/',
+  (req, res) => {
+    throw `Something wrong`;
+  }
+  // res.send('Hello world')
+);
 app.use('/graphql', controllers);
 
 app.get('/user', async (req, res) => {
@@ -40,7 +46,6 @@ app.get('/createuser', async (req, res) => {
     });
     res.send(users);
   } catch (error) {
-    console.log({error})
     if (error.errors && error.errors.length) {
       error = {
         msg: error.errors.map(e => e.message).join(' '),
@@ -102,7 +107,7 @@ app.get('/createfriend', async (req, res) => {
       },
       {
         // association: [RequestedBy, RequestedTo],
-        include: [RequestedBy, RequestedTo]
+        include: [RequestedBy, RequestedTo],
       }
     );
     res.send(friend);
@@ -195,6 +200,20 @@ app.get('/like', async (req, res) => {
     res.send(error);
   }
 });
+app.use(function(err, req, res, next) {
+  console.error(err);
+  res.status(500).send({
+    msg: 'An unexpect error occured!',
+  });
+});
 app.listen(5000, () => {
   console.log(`Server running on port ${PORT}`);
+});
+process.on('exit', function() {
+  console.log('Bye Bye...');
+  database.close();
+});
+process.on('SIGINT', function() {
+  console.log("Woah woah! Closing gracefully...");
+  process.exit();
 });

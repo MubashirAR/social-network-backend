@@ -34,9 +34,15 @@ const Post = database.define(
         key: 'id',
       },
     },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    }
   },
   {
     timestamps: true,
+    underscored: true
   }
 );
 // Post.sync({force: true}).then(() => {

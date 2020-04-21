@@ -9,11 +9,14 @@ const User = database.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: { msg: 'Username is taken! Please another username.' },
-    },
+    // username: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    //   unique: { msg: 'Username is taken! Please another username.' },
+    //   validate: {
+
+    //   }
+    // },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -49,6 +52,7 @@ const User = database.define(
   },
   {
     timestamps: true,
+    underscored: true
   }
 );
 // User.sync({ force: true }).then(() => {

@@ -33,6 +33,7 @@ const Picture = database.define(
   },
   {
     timestamps: true,
+    underscored: true
   }
 );
 Picture.beforeValidate(({ dataValues }) => {

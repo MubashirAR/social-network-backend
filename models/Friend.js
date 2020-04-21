@@ -34,6 +34,7 @@ const Friend = database.define(
   },
   {
     timestamps: true,
+    underscored: true
   }
 );
 const RequestedBy = Friend.belongsTo(User.User, { as: 'RequestedBy' });

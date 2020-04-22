@@ -1,4 +1,4 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
+const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize('socialnetwork', 'mubashir', 'password', {
   host: 'localhost',
   dialect: 'postgres',

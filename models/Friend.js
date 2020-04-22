@@ -1,6 +1,7 @@
 const database = require('../config/database').database;
 const User = require('./User');
 const { DataTypes } = require('sequelize');
+const queryInterface  = database.getQueryInterface();
 
 const Friend = database.define(
   'friend',
@@ -21,6 +22,11 @@ const Friend = database.define(
     //     key: 'id',
     //   },
     // },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
     isAccepted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -47,4 +53,7 @@ Friend.afterValidate(({ dataValues }) => {
     throw new Error(`You cannot add yourself as a friend!`);
   }
 });
+queryInterface.addConstraint('friends', ['requested_by_id', 'requested_to_id'], {
+  type: 'unique'
+})
 module.exports = { Friend, RequestedBy, RequestedTo };

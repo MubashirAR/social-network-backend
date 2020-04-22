@@ -7,7 +7,8 @@ const Block = database.define(
   {
     isActive: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {

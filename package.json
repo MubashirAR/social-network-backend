@@ -4,7 +4,8 @@
   "description": "This is the backend for a social networking app",
   "main": "bin/www",
   "scripts": {
-    "test": "jest --silent"
+    "test": "jest --silent",
+    "test-verbose": "jest"
   },
   "repository": {
     "type": "git",

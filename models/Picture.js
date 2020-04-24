@@ -30,6 +30,11 @@ const Picture = database.define(
         key: 'id',
       },
     },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    }
   },
   {
     timestamps: true,

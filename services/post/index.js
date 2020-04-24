@@ -10,18 +10,14 @@ const getAllPost = ({ CreatedById }) => {
 };
 const getPost = ({ id }) => {
   return models.Post.Post.findOne({
+    raw: true,
     where: {
       id,
     },
   });
 };
-const createPost = ({ text, CreatedById, postType, OriginalPostId }) => {
-  return models.Post.Post.create({
-    text,
-    CreatedById,
-    postType,
-    OriginalPostId,
-  });
+const createPost = (post) => {
+  return models.Post.Post.create(post);
 };
 const updatePost = async ({ id, text }) => {
   if (!id || !text) {

@@ -25,6 +25,13 @@ const Post = database.define(
       type: DataTypes.ENUM,
       allowNull: false,
       values: CONSTANTS.POST_TYPES,
+      validate: {
+        missingIdCheck(value) {
+          if (value === 'share' && !this.OriginalPostId) {
+            throw new Error('OriginalPostId missing!');
+          }
+        },
+      },
     },
     OriginalPostId: {
       // In case the post is actually a shared post
@@ -37,12 +44,12 @@ const Post = database.define(
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true
-    }
+      defaultValue: true,
+    },
   },
   {
     timestamps: true,
-    underscored: true
+    underscored: true,
   }
 );
 // Post.sync({force: true}).then(() => {

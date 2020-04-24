@@ -1,13 +1,22 @@
 const comment = require('./index');
+const post = require('../post');
 
 describe('Comment', () => {
+  let newPost;
+  beforeAll(async () => {
+    newPost = await post.createPost({
+      text: 'This is a test post',
+      CreatedById: 1,
+      postType: 'post',
+    });
+  })
   let newComment;
   test('should be created on post', async () => {
     const resp = await comment.createComment({
       text: 'This is a comment on a post',
       CommentById: 1,
       commentedOn: 'post',
-      OriginalPostId: 3,
+      OriginalPostId: newPost.id,
     });
     newComment = resp.id;
     expect(resp.id).toBeTruthy();
@@ -17,7 +26,7 @@ describe('Comment', () => {
       text: 'This is a comment on a comment',
       CommentById: 1,
       commentedOn: 'comment',
-      OriginalCommentId: 3,
+      OriginalCommentId: newPost.id,
     });
     expect(resp.id).toBeTruthy();
   });
@@ -26,7 +35,6 @@ describe('Comment', () => {
       id: newComment,
       text: 'This is the updated comment'
     });
-    console.log({resp})
     expect(resp.text).toBe('This is the updated comment');
   });
   test('should be deactivated', async () => {

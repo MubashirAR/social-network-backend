@@ -1,37 +1,54 @@
-const {Friend, RequestedBy, RequestedTo} = require('../../models').Friend;
+const { Friend, RequestedBy, RequestedTo } = require('../../models').Friend;
 
 const addFriend = friend => {
   return Friend.create(friend, {
-    include: [RequestedBy, RequestedTo]
+    include: [RequestedBy, RequestedTo],
   });
 };
-const acceptFriend = async id => {
+const acceptFriend = async ({ RequestedById, RequestedToId }) => {
   const friend = await Friend.findOne({
     where: {
-      id,
+      RequestedById,
+      RequestedToId,
       isAccepted: false,
-      isRejected: false
-    }
+      isActive: true,
+      isRejected: false,
+    },
   });
+  if(!friend) {
+    throw new Error('Cannot find this friend request!');
+  }
   friend.isAccepted = true;
   return await friend.save();
 };
-const rejectFriend = async id => {
+const rejectFriend = async ({ RequestedById, RequestedToId }) => {
   const friend = await Friend.findOne({
     where: {
-      id,
+      RequestedById,
+      RequestedToId,
       isAccepted: false,
-      isRejected: false
-    }
+      isActive: true,
+      isRejected: false,
+    },
   });
-  if(!friend){
+  if (!friend) {
     throw new Error('Cannot find this friend request!');
   }
   friend.isRejected = true;
   return await friend.save();
 };
-const removeFriend = async id => {
-  const friend = await Friend.findByPk(id);
+const removeFriend = async ({ RequestedById, RequestedToId }) => {
+  const friend = await Friend.findOne({
+    where: {
+      RequestedById,
+      RequestedToId,
+      isActive: true,
+      isAccepted: true,
+    },
+  });
+  if (!friend) {
+    throw { msg: 'Connection details not found' };
+  }
   friend.isActive = false;
   return await friend.save();
 };
@@ -39,5 +56,5 @@ module.exports = {
   addFriend,
   acceptFriend,
   rejectFriend,
-  removeFriend
-}
+  removeFriend,
+};

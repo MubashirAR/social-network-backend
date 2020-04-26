@@ -53,7 +53,7 @@ Friend.afterValidate(({ dataValues }) => {
     throw new Error(`You cannot add yourself as a friend!`);
   }
 });
-queryInterface.addConstraint('friends', ['requested_by_id', 'requested_to_id'], {
-  type: 'unique'
-})
+// queryInterface.addConstraint('friends', ['requested_by_id', 'requested_to_id'], {
+//   type: 'unique'
+// })
 module.exports = { Friend, RequestedBy, RequestedTo };

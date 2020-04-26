@@ -7,7 +7,9 @@ const register = async ({name, email, mobile, password, dob}) => {
 };
 const login = async ({email, password}) => {
   const user = await models.User.User.findOne({
-    email
+    where: {
+      email
+    }
   });
   return user;
 };

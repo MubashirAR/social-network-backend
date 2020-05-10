@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const Sequelize = require('sequelize');
 const {
   GraphQLObjectType,
   GraphQLBoolean,
@@ -19,6 +20,7 @@ const services = require('../services');
 const User = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
+    id: { type: GraphQLInt },
     name: {
       type: GraphQLString,
     },
@@ -30,26 +32,32 @@ const User = new GraphQLObjectType({
 const Post = new GraphQLObjectType({
   name: 'Post',
   fields: () => ({
+    id: { type: GraphQLInt },
     text: { type: GraphQLString },
     CreatedById: { type: GraphQLInt },
     postType: { type: GraphQLString },
     OriginalPostId: { type: GraphQLInt },
     isActive: { type: GraphQLBoolean },
+    likes: { type: new GraphQLList(Like) },
   }),
 });
 const Friend = new GraphQLObjectType({
   name: 'Friend',
   fields: () => ({
+    id: { type: GraphQLInt },
     isActive: { type: GraphQLBoolean },
     isRejected: { type: GraphQLBoolean },
     isAccepted: { type: GraphQLBoolean },
     RequestedById: { type: GraphQLInt },
     RequestedToId: { type: GraphQLInt },
+    RequestedBy: { type: User },
+    RequestedTo: { type: User },
   }),
 });
 const Like = new GraphQLObjectType({
   name: 'Like',
   fields: () => ({
+    id: { type: GraphQLInt },
     isActive: { type: GraphQLBoolean },
     likedType: { type: GraphQLString },
     CommentId: { type: GraphQLInt },
@@ -92,11 +100,12 @@ const mutation = new GraphQLObjectType({
       type: Post,
       args: {
         text: { type: GraphQLString },
-        CreatedById: { type: GraphQLInt },
+        // CreatedById: { type: GraphQLInt },
         postType: { type: GraphQLString },
         OriginalPostId: { type: GraphQLInt },
       },
-      async resolve(parent, args) {
+      async resolve(parent, args, request) {
+        args.CreatedById = request.user.id;
         let post = await services.post.createPost(args);
         return post;
       },
@@ -196,22 +205,42 @@ const mutation = new GraphQLObjectType({
 const query = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
+    user: {
+      type: User,
+      args: {
+        email: { type: GraphQLString },
+      },
+      resolve: (parent, args) => {
+        return user.login(args);
+      },
+    },
     users: {
       type: new GraphQLList(User),
       resolve: (parent, args) => {
-        return Models.User.User.findAll().then(data => data);
+        return Models.User.User.findAll().then((data) => data);
       },
     },
     posts: {
       type: new GraphQLList(Post),
       resolve: () => {
-        return Models.Post.Post.findAll().then(data => data);
+        return Models.Post.Post.findAll().then((data) => data);
       },
     },
     friends: {
       type: new GraphQLList(Friend),
       resolve: () => {
-        return Models.Friend.Friend.findAll().then(data => data);
+        return Models.Friend.Friend.findAll({
+          include: [Models.Friend.RequestedTo, Models.Friend.RequestedBy],
+        }).then((data) => {
+          return data;
+        });
+      },
+    },
+    feed: {
+      type: new GraphQLList(Post),
+      resolve: async (parent, args, request) => {
+        const resp = await services.post.getAllPost({ CreatedById: request.user.id });
+        return resp;
       },
     },
   },

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const database = require('../config/database').database;
 const CONSTANTS = require('../constants');
+const Like = require('./Like').Like;
 
 const Post = database.define(
   'post',
@@ -52,7 +53,10 @@ const Post = database.define(
     underscored: true,
   }
 );
+const likes = Post.hasMany(Like, {
+  as: 'likes'
+});
 // Post.sync({force: true}).then(() => {
 //   console.log('sync')
 // })
-module.exports = { Post };
+module.exports = { Post, likes };

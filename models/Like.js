@@ -50,12 +50,12 @@ const Like = database.define(
 // const LikedById = Friend.belongsTo(User, { as: 'LikedById' });
 // const CommentId = Friend.belongsTo(Comment, { as: 'CommentId' });
 
-queryInterface.addConstraint('likes', ['liked_by_id', 'post_id'], {
-  type: 'unique',
-});
-queryInterface.addConstraint('likes', ['liked_by_id', 'comment_id'], {
-  type: 'unique',
-});
+// queryInterface.addConstraint('likes', ['liked_by_id', 'post_id'], {
+//   type: 'unique',
+// });
+// queryInterface.addConstraint('likes', ['liked_by_id', 'comment_id'], {
+//   type: 'unique',
+// });
 Like.beforeValidate(({ dataValues }) => {
   if (dataValues.likedType === 'comment' && !dataValues.CommentId) {
     throw new Error(`commentId missing!`);

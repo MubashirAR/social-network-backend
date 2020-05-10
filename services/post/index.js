@@ -1,12 +1,23 @@
 const models = require('../../models');
 const Sequelize = require('sequelize');
 
-const getAllPost = ({ CreatedById }) => {
-  return models.Post.Post.findAll({
+const getAllPost = async ({ CreatedById }) => {
+  let posts = await models.Post.Post.findAll({
+    raw: false,
+    nest: true,
     where: {
       CreatedById,
     },
+    order: [['createdAt', 'DESC']],
+    include: [models.Post.likes]
   });
+  posts = posts.filter(p => p).map(p => {
+    p = p.get();
+    let likes = p.likes.filter(l => l).map(l => l.get());
+    p.likes = likes;
+    return p
+  })
+  return posts;
 };
 const getPost = ({ id }) => {
   return models.Post.Post.findOne({
@@ -14,6 +25,7 @@ const getPost = ({ id }) => {
     where: {
       id,
     },
+    include: [models.Post.likes]
   });
 };
 const createPost = (post) => {

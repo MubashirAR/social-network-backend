@@ -6,6 +6,32 @@ const Block = require('../models/Block');
 const Picture = require('../models/Picture');
 const Like = require('../models/Like');
 
+// const friends = User.User.hasMany(Friend.Friend, {
+//   as: 'friends',
+//   foreignKey: 'requested_by_id',
+
+// })
+
+const friends = User.User.belongsToMany(User.User, {
+  as: 'FriendRequested',
+  foreignKey: 'requested_to_id',
+  through: Friend.Friend,
+  otherKey: 'requested_by_id'
+}) 
+const friends2 = User.User.belongsToMany(User.User, {
+  as: 'FriendsReceived',
+  foreignKey: 'requested_by_id',
+  through: Friend.Friend,
+  otherKey: 'requested_to_id'
+}) 
+User.User.hasMany(Friend.Friend, {
+  as: 'FriendRequestsSent',
+  foreignKey: 'requested_by_id'
+})
+User.User.hasMany(Friend.Friend, {
+  as: 'FriendRequestsReceived',
+  foreignKey: 'requested_to_id'
+})
 module.exports = {
   User,
   Post,
@@ -14,4 +40,10 @@ module.exports = {
   Block,
   Picture,
   Like,
+  associations: {
+    User: {
+      friends,
+      friends2
+    }
+  }
 };

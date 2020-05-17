@@ -26,7 +26,10 @@ const User = new GraphQLObjectType({
     },
     email: { type: GraphQLString },
     mobile: { type: GraphQLString },
-    dob: { type: GraphQLDate },
+    dob: { type: GraphQLString },
+    FriendRequestsSent: { type: new GraphQLList(Friend) },
+    FriendRequestsReceived: { type: new GraphQLList(Friend) },
+    createdAt: { type: GraphQLString },
   }),
 });
 const Post = new GraphQLObjectType({
@@ -216,8 +219,13 @@ const query = new GraphQLObjectType({
     },
     users: {
       type: new GraphQLList(User),
+      args: {
+        text: { type: GraphQLString },
+      },
       resolve: (parent, args) => {
-        return Models.User.User.findAll().then((data) => data);
+        return services.user.getAllUsers({ text: args.text }).then((data) => {
+          return data;
+        });
       },
     },
     posts: {

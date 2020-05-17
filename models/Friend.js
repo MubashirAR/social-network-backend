@@ -45,13 +45,15 @@ const Friend = database.define(
 );
 const RequestedBy = Friend.belongsTo(User.User, { as: 'RequestedBy' });
 const RequestedTo = Friend.belongsTo(User.User, { as: 'RequestedTo' });
-Friend.afterValidate(({ dataValues }) => {
+Friend.beforeValidate(({ dataValues }) => {
   if (!dataValues.RequestedById || !dataValues.RequestedToId) {
     throw new Error(`RequestedById & RequestedToId are required!`);
   }
   if (dataValues.RequestedById === dataValues.RequestedToId) {
     throw new Error(`You cannot add yourself as a friend!`);
   }
+  dataValues.requested_to_id = dataValues.RequestedToId
+  dataValues.requested_by_id = dataValues.RequestedById
 });
 // queryInterface.addConstraint('friends', ['requested_by_id', 'requested_to_id'], {
 //   type: 'unique'

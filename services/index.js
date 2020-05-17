@@ -5,6 +5,7 @@ const friend = require('./friend');
 const like = require('./like');
 const picture = require('./picture');
 const post = require('./post');
+const user = require('./user');
 
 module.exports = {
   auth,
@@ -14,4 +15,5 @@ module.exports = {
   like,
   picture,
   post,
+  user
 };

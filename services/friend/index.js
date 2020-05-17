@@ -1,11 +1,13 @@
 const { Friend, RequestedBy, RequestedTo } = require('../../models').Friend;
 
-const addFriend = friend => {
-  return Friend.create(friend, {
-    include: [RequestedBy, RequestedTo],
+const addFriend = async (friend) => {
+  const newFriend = await Friend.create(friend, {
+    // include: [RequestedBy, RequestedTo],
   });
+  return newFriend;
 };
 const acceptFriend = async ({ RequestedById, RequestedToId }) => {
+  console.log({ RequestedById, RequestedToId });
   const friend = await Friend.findOne({
     where: {
       RequestedById,
@@ -15,13 +17,14 @@ const acceptFriend = async ({ RequestedById, RequestedToId }) => {
       isRejected: false,
     },
   });
-  if(!friend) {
+  if (!friend) {
     throw new Error('Cannot find this friend request!');
   }
   friend.isAccepted = true;
   return await friend.save();
 };
 const rejectFriend = async ({ RequestedById, RequestedToId }) => {
+  console.log({ RequestedById, RequestedToId })
   const friend = await Friend.findOne({
     where: {
       RequestedById,
@@ -38,6 +41,7 @@ const rejectFriend = async ({ RequestedById, RequestedToId }) => {
   return await friend.save();
 };
 const removeFriend = async ({ RequestedById, RequestedToId }) => {
+  console.log({RequestedById, RequestedToId})
   const friend = await Friend.findOne({
     where: {
       RequestedById,

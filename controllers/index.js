@@ -42,6 +42,7 @@ const Post = new GraphQLObjectType({
     OriginalPostId: { type: GraphQLInt },
     isActive: { type: GraphQLBoolean },
     likes: { type: new GraphQLList(Like) },
+    CreatedBy: { type: User },
   }),
 });
 const Friend = new GraphQLObjectType({
@@ -231,7 +232,9 @@ const query = new GraphQLObjectType({
     posts: {
       type: new GraphQLList(Post),
       resolve: () => {
-        return Models.Post.Post.findAll().then((data) => data);
+        return Models.Post.Post.findAll().then((data) => {
+          return data;
+        });
       },
     },
     friends: {
@@ -247,7 +250,7 @@ const query = new GraphQLObjectType({
     feed: {
       type: new GraphQLList(Post),
       resolve: async (parent, args, request) => {
-        const resp = await services.post.getAllPost({ CreatedById: request.user.id });
+        const resp = await services.post.getFeed({ CreatedById: request.user.id });
         return resp;
       },
     },

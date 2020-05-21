@@ -48,11 +48,29 @@ const getFeed = async ({ CreatedById }) => {
       CreatedById: { $in: users },
     },
     order: [['createdAt', 'DESC']],
-    include: [models.Post.likes, {
-      model: models.User.User,
-      foreignKey: 'created_by_id',
-      as: 'CreatedBy'
-    }],
+    include: [
+      models.Post.likes,
+      {
+        model: models.User.User,
+        foreignKey: 'created_by_id',
+        as: 'CreatedBy',
+      },
+      {
+        model: models.Comment.Comment,
+        as: 'comments',
+        foreignKey: 'original_post_id',
+        include: [
+          models.associations.Comment.commentBy,
+          {
+            model: models.Comment.Comment,
+            as: 'comments',
+            foreignKey: 'original_comment_id',
+            include: [models.associations.Comment.commentBy, models.associations.Comment.likes],
+          },
+          models.associations.Comment.likes,
+        ],
+      },
+    ],
   });
   // posts = posts
   //   .filter((p) => p)

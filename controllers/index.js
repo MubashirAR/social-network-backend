@@ -43,6 +43,7 @@ const Post = new GraphQLObjectType({
     isActive: { type: GraphQLBoolean },
     likes: { type: new GraphQLList(Like) },
     CreatedBy: { type: User },
+    comments: { type: new GraphQLList(Comment) },
   }),
 });
 const Friend = new GraphQLObjectType({
@@ -67,6 +68,20 @@ const Like = new GraphQLObjectType({
     CommentId: { type: GraphQLInt },
     PostId: { type: GraphQLInt },
     LikedById: { type: GraphQLInt },
+  }),
+});
+const Comment = new GraphQLObjectType({
+  name: 'Comment',
+  fields: () => ({
+    id: { type: GraphQLInt },
+    isActive: { type: GraphQLBoolean },
+    text: { type: GraphQLString },
+    CommentById: { type: GraphQLInt },
+    OriginalCommentId: { type: GraphQLInt },
+    CommentedOn: { type: GraphQLString },
+    CommentBy: { type: User },
+    comments: { type: new GraphQLList(Comment) },
+    likes: { type: new GraphQLList(Like) },
   }),
 });
 const mutation = new GraphQLObjectType({
@@ -194,6 +209,32 @@ const mutation = new GraphQLObjectType({
     },
     removeLike: {
       type: Like,
+      args: {
+        CommentId: { type: GraphQLInt },
+        PostId: { type: GraphQLInt },
+        LikedById: { type: GraphQLInt },
+      },
+      async resolve(parent, args) {
+        let like = await services.like.removeLike(args);
+        return like;
+      },
+    },
+    addComment: {
+      type: Comment,
+      args: {
+        text: { type: GraphQLString },
+        CommentById: { type: GraphQLInt },
+        OriginalCommentId: { type: GraphQLInt },
+        OriginalPostId: { type: GraphQLInt },
+        commentedOn: { type: GraphQLString },
+      },
+      async resolve(parent, args) {
+        let like = await services.comment.createComment(args);
+        return like;
+      },
+    },
+    removeComment: {
+      type: Comment,
       args: {
         CommentId: { type: GraphQLInt },
         PostId: { type: GraphQLInt },

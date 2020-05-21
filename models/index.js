@@ -41,6 +41,38 @@ Post.Post.hasOne(User.User, {
   foreignKey: 'id',
   sourceKey: 'created_by_id'
 });
+Post.Post.hasMany(Comment.Comment, {
+  as: 'comments',
+  foreignKey: 'original_post_id',
+});
+Comment.Comment.hasOne(Post.Post, {
+  as: 'OriginalPostDetails',
+  foreignKey: 'id',
+  sourceKey: 'original_post_id'
+});
+Comment.Comment.hasMany(Comment.Comment, {
+  as: 'comments',
+  foreignKey: 'original_comment_id',
+});
+Comment.Comment.hasOne(Comment.Comment, {
+  as: 'OriginalCommentDetails',
+  foreignKey: 'id',
+  sourceKey: 'original_comment_id'
+});
+const likesOnComment = Comment.Comment.hasMany(Like.Like, {
+  as: 'likes',
+  foreignKey: 'comment_id',
+});
+Like.Like.hasOne(Comment.Comment, {
+  as: 'OriginalLike',
+  foreignKey: 'id',
+  sourceKey: 'comment_id'
+});
+const commentBy = Comment.Comment.hasOne(User.User, {
+  as: 'CommentBy',
+  sourceKey: 'CommentById',
+  foreignKey: 'id',
+});
 module.exports = {
   User,
   Post,
@@ -54,5 +86,9 @@ module.exports = {
       friends,
       friends2,
     },
+    Comment: {
+      commentBy,
+      likes: likesOnComment
+    }
   },
 };
